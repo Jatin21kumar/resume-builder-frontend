@@ -20,7 +20,7 @@ export default function Dashboard() {
             <Button
               variant="contained"
               size="large"
-              onClick={() => navigate("/editor/new")}
+              onClick={() => navigate("/resume/new/edit")}
             >
               Create Resume
             </Button>
@@ -28,7 +28,7 @@ export default function Dashboard() {
             <Button
               variant="outlined"
               size="large"
-              onClick={() => navigate("/resumes")}
+              onClick={() => navigate("/resume/list")}
             >
               My Resumes
             </Button>
