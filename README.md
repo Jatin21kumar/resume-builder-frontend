@@ -22,7 +22,7 @@ https://resume-builder-frontend-steel.vercel.app
 - Vercel (Deployment)
 
 ## 🔗 Backend API
-
+https://resume-builder-backend-61u0.onrender.com
 
 ## ⚙️ Environment Variables
 
