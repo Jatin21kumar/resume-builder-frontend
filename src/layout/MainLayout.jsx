@@ -7,9 +7,11 @@ export default function MainLayout() {
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
       <Navbar />
 
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Outlet />
-      </Container>
+      <Box sx={{ py: 3 }}>
+        <Container maxWidth="lg">
+          <Outlet />
+        </Container>
+      </Box>
     </Box>
   );
 }

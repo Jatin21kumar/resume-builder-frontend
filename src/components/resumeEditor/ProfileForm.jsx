@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Box, TextField, Button, Alert } from "@mui/material";
+import { Box, TextField, Button, Alert, Stack, Typography, Card } from "@mui/material";
+import SaveIcon from "@mui/icons-material/Save";
 
 export default function ProfileForm({ resume, onSave }) {
   const [form, setForm] = useState({
@@ -10,6 +11,7 @@ export default function ProfileForm({ resume, onSave }) {
 
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // 🔑 Sync when resume changes
   useEffect(() => {
@@ -30,45 +32,105 @@ export default function ProfileForm({ resume, onSave }) {
   const handleSave = async () => {
     if (!validate()) return;
 
-    await onSave({
-      profileInfo: {
-        ...resume.profileInfo,
-        ...form
-      }
-    });
+    setLoading(true);
+    try {
+      await onSave({
+        profileInfo: {
+          ...resume.profileInfo,
+          ...form
+        }
+      });
 
-    setSuccess(true);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Box sx={{ maxWidth: 700, display: "flex", flexDirection: "column", gap: 3 }}>
-      {success && <Alert severity="success">Profile saved</Alert>}
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      {success && (
+        <Alert severity="success" sx={{ borderRadius: "10px" }}>
+          Profile saved successfully!
+        </Alert>
+      )}
 
-      <TextField
-        label="Full Name"
-        value={form.fullName}
-        error={!!errors.fullName}
-        helperText={errors.fullName}
-        onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-        required
-      />
+      <Box>
+        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600, color: "#a0aac0" }}>
+          Full Name *
+        </Typography>
+        <TextField
+          label="e.g., John Doe"
+          value={form.fullName}
+          error={!!errors.fullName}
+          helperText={errors.fullName}
+          onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+          required
+          fullWidth
+          placeholder="Enter your full name"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "rgba(255, 255, 255, 0.03)"
+            }
+          }}
+        />
+      </Box>
 
-      <TextField
-        label="Designation"
-        value={form.designation}
-        onChange={(e) => setForm({ ...form, designation: e.target.value })}
-      />
+      <Box>
+        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600, color: "#a0aac0" }}>
+          Designation
+        </Typography>
+        <TextField
+          label="e.g., Software Engineer"
+          value={form.designation}
+          onChange={(e) => setForm({ ...form, designation: e.target.value })}
+          fullWidth
+          placeholder="Your job title or position"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "rgba(255, 255, 255, 0.03)"
+            }
+          }}
+        />
+      </Box>
 
-      <TextField
-        label="Summary"
-        value={form.summary}
-        multiline
-        minRows={4}
-        onChange={(e) => setForm({ ...form, summary: e.target.value })}
-      />
+      <Box>
+        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600, color: "#a0aac0" }}>
+          Professional Summary
+        </Typography>
+        <TextField
+          label="Brief description about yourself"
+          value={form.summary}
+          multiline
+          minRows={5}
+          onChange={(e) => setForm({ ...form, summary: e.target.value })}
+          fullWidth
+          placeholder="Write a compelling summary of your professional background, skills, and aspirations..."
+          helperText={`${form.summary.length}/500 characters`}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "rgba(255, 255, 255, 0.03)"
+            }
+          }}
+        />
+      </Box>
 
-      <Button sx={{ mt: 2 }} variant="contained" onClick={handleSave}>
-        Save
+      <Button
+        variant="contained"
+        onClick={handleSave}
+        disabled={loading}
+        startIcon={<SaveIcon />}
+        sx={{
+          mt: 2,
+          py: 1.5,
+          background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+          "&:hover": {
+            background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+          }
+        }}
+      >
+        {loading ? "Saving..." : "Save Profile"}
       </Button>
     </Box>
   );
