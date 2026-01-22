@@ -1,32 +1,39 @@
 # Resume Builder – Frontend
 
-A modern resume builder web application that allows users to create, edit, and manage professional resumes through a clean and intuitive interface.
+Frontend for the Resume Builder application built using **React**, **Vite**, and **Material UI**.
 
-This repository contains the **frontend** of the Resume Builder project, built with React.
+## 🌐 Live App
+https://resume-builder-frontend-steel.vercel.app
 
-## 🚀 Live Demo
-https://<your-vercel-url>
+## ✨ Features
+- User registration & login
+- JWT-based authentication
+- Resume dashboard
+- Resume editor
+- Responsive UI
+- Protected routes
 
 ## 🛠 Tech Stack
 - React
-- JavaScript (ES6+)
-- HTML5, CSS3
+- Vite
+- React Router
 - Axios
-- Vite / Create React App (use the one you actually use)
+- Material UI
+- Vercel (Deployment)
 
-## ✨ Features
-- User authentication (JWT-based)
-- Create, update, and delete resumes
-- Section-based resume editing (education, skills, experience, etc.)
-- Responsive UI
-- Integration with Spring Boot REST API
-
-## 🔗 Backend Repository
-https://github.com/<your-username>/resume-builder-backend
+## 🔗 Backend API
+https://resume-builder-backend-61u0.onrender.com
 
 ## ⚙️ Environment Variables
 
-Create a `.env` file in the root directory:
-
 ```env
-VITE_API_BASE_URL=https://your-backend-api-url
+VITE_API_BASE_URL=https://resume-builder-backend-61u0.onrender.com
+
+## Run Locally
+git clone https://github.com/Jatin2ikumar/resume-builder-frontend.git
+cd resume-builder-frontend
+npm install
+npm run dev
+
+## Runs on:
+http://localhost:5173
