@@ -1,8 +1,8 @@
 import { Box, TextField, Button, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function ProjectsForm({ resume, onSave, onChange }) {
-  const projects = resume.projects || [];
+export default function ProjectsForm({ resumeData, onSave, onChange }) {
+  const projects = resumeData?.projects || [];
 
   const emitUpdate = (updatedProjects) => {
     if (typeof onChange === "function") {

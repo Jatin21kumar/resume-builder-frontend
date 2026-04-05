@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   TextField,
@@ -11,20 +11,14 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function SkillsForm({ resume, onSave, onChange }) {
-  const [skills, setSkills] = useState([]);
-  const [languages, setLanguages] = useState([]);
+export default function SkillsForm({ resumeData, onSave, onChange }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    setSkills(resume.skills || []);
-    setLanguages(resume.languages || []);
-  }, [resume]);
+  const skills = resumeData?.skills || [];
+  const languages = resumeData?.languages || [];
 
   const addSkill = () => {
     const updated = [...skills, { name: "", progress: 50 }];
-    setSkills(updated);
     if (typeof onChange === "function") {
       onChange({ skills: updated, languages });
     }
@@ -33,7 +27,6 @@ export default function SkillsForm({ resume, onSave, onChange }) {
 
   const addLanguage = () => {
     const updated = [...languages, { name: "", progress: 50 }];
-    setLanguages(updated);
     if (typeof onChange === "function") {
       onChange({ skills, languages: updated });
     }
@@ -82,7 +75,6 @@ export default function SkillsForm({ resume, onSave, onChange }) {
                 onChange={(e) => {
                   const updated = [...skills];
                   updated[i].name = e.target.value;
-                  setSkills(updated);
                   if (typeof onChange === "function") {
                     onChange({ skills: updated, languages });
                   }
@@ -94,7 +86,6 @@ export default function SkillsForm({ resume, onSave, onChange }) {
                 onChange={(e, v) => {
                   const updated = [...skills];
                   updated[i].progress = v;
-                  setSkills(updated);
                   if (typeof onChange === "function") {
                     onChange({ skills: updated, languages });
                   }
@@ -107,7 +98,6 @@ export default function SkillsForm({ resume, onSave, onChange }) {
               <IconButton color="error" onClick={() =>
                 {
                   const updated = skills.filter((_, idx) => idx !== i);
-                  setSkills(updated);
                   if (typeof onChange === "function") {
                     onChange({ skills: updated, languages });
                   }
@@ -138,7 +128,6 @@ export default function SkillsForm({ resume, onSave, onChange }) {
                 onChange={(e) => {
                   const updated = [...languages];
                   updated[i].name = e.target.value;
-                  setLanguages(updated);
                   if (typeof onChange === "function") {
                     onChange({ skills, languages: updated });
                   }
@@ -150,7 +139,6 @@ export default function SkillsForm({ resume, onSave, onChange }) {
                 onChange={(e, v) => {
                   const updated = [...languages];
                   updated[i].progress = v;
-                  setLanguages(updated);
                   if (typeof onChange === "function") {
                     onChange({ skills, languages: updated });
                   }
@@ -163,7 +151,6 @@ export default function SkillsForm({ resume, onSave, onChange }) {
               <IconButton color="error" onClick={() =>
                 {
                   const updated = languages.filter((_, idx) => idx !== i);
-                  setLanguages(updated);
                   if (typeof onChange === "function") {
                     onChange({ skills, languages: updated });
                   }

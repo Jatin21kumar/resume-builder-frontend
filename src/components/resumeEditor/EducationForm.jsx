@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   TextField,
@@ -10,14 +10,10 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function EducationForm({ resume, onSave, onChange }) {
-  const [educations, setEducations] = useState([]);
+export default function EducationForm({ resumeData, onSave, onChange }) {
   const [errors, setErrors] = useState("");
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    setEducations(resume.educations || []);
-  }, [resume]);
+  const educations = resumeData?.educations || [];
 
   const addEducation = () => {
     const updated = [
@@ -29,15 +25,12 @@ export default function EducationForm({ resume, onSave, onChange }) {
         endDate: ""
       }
     ];
-
-    setEducations(updated);
     if (typeof onChange === "function") onChange({ educations: updated });
   };
 
   const updateEducation = (index, field, value) => {
     const updated = [...educations];
     updated[index][field] = value;
-    setEducations(updated);
     if (typeof onChange === "function") onChange({ educations: updated });
     setErrors("");
     setSuccess(false);
@@ -45,7 +38,6 @@ export default function EducationForm({ resume, onSave, onChange }) {
 
   const removeEducation = (index) => {
     const updated = educations.filter((_, i) => i !== index);
-    setEducations(updated);
     if (typeof onChange === "function") onChange({ educations: updated });
   };
 

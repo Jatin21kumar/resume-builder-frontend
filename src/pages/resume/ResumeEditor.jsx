@@ -38,12 +38,14 @@ import html2canvas from "html2canvas";
 import SaveIcon from "@mui/icons-material/Save";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import LockIcon from "@mui/icons-material/Lock";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export default function ResumeEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [resume, setResume] = useState(null);
+  const [resumeData, setResumeData] = useState(null);
   const [tab, setTab] = useState(0);
   const [error, setError] = useState("");
 
@@ -58,7 +60,7 @@ export default function ResumeEditor() {
 
   const handleLocalUpdate = (partialUpdate) => {
     if (!partialUpdate) return;
-    setResume((prev) => {
+    setResumeData((prev) => {
       if (!prev) return prev;
       return {
         ...prev,
@@ -80,7 +82,7 @@ export default function ResumeEditor() {
 
         if (!isMounted) return;
 
-        setResume(data);
+        setResumeData(data);
         setTitle(data?.title || "");
 
         if (id === "new" && data?.id) {
@@ -100,18 +102,18 @@ export default function ResumeEditor() {
   }, [id, navigate]);
 
   const handleUpdate = async (partialUpdate) => {
-    if (!resume) return;
+    if (!resumeData) return;
 
     setSaving(true);
     setError("");
 
     try {
       const updated = await updateResume(id, {
-        ...resume,
+        ...resumeData,
         ...partialUpdate,
       });
 
-      setResume(updated);
+      setResumeData(updated);
     } catch (err) {
       setError(err.message || "Failed to save resume changes");
     } finally {
@@ -146,7 +148,29 @@ export default function ResumeEditor() {
     }
   };
 
-  if (!resume) {
+  if (!resumeData && error) {
+    return (
+      <Container maxWidth="md" sx={{ py: 6 }}>
+        <Alert
+          severity="error"
+          action={
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button size="small" startIcon={<ArrowBackIcon />} onClick={() => navigate("/resume/list")}>
+                Back
+              </Button>
+              <Button size="small" startIcon={<RefreshIcon />} onClick={() => window.location.reload()}>
+                Retry
+              </Button>
+            </Box>
+          }
+        >
+          {error}
+        </Alert>
+      </Container>
+    );
+  }
+
+  if (!resumeData) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
         <CircularProgress />
@@ -191,7 +215,7 @@ export default function ResumeEditor() {
                 sx={{ cursor: "pointer", flex: 1, "&:hover": { color: "#60a5fa" }, transition: "color 0.3s" }}
                 onClick={() => setEditingTitle(true)}
               >
-                {resume.title || "Untitled Resume"}
+                {resumeData.title || "Untitled Resume"}
               </Typography>
             )}
 
@@ -213,12 +237,12 @@ export default function ResumeEditor() {
                   Choose Template
                 </Typography>
                 <Select
-                  value={resume.template || "basic"}
+                  value={resumeData.template || "basic"}
                   size="small"
                   onChange={async (e) => {
                     const value = e.target.value;
 
-                    if (!resume.isPremium && value !== "basic") {
+                    if (!resumeData.isPremium && value !== "basic") {
                       setShowUpgrade(true);
                       return;
                     }
@@ -312,11 +336,11 @@ export default function ResumeEditor() {
 
               {/* FORM CONTENT */}
               <Box sx={{ p: 4 }}>
-                {tab === 0 && <ProfileForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
-                {tab === 1 && <EducationForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
-                {tab === 2 && <ExperienceForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
-                {tab === 3 && <SkillsForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
-                {tab === 4 && <ProjectsForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
+                {tab === 0 && <ProfileForm resumeData={resumeData} onChange={handleLocalUpdate} onSave={handleUpdate} />}
+                {tab === 1 && <EducationForm resumeData={resumeData} onChange={handleLocalUpdate} onSave={handleUpdate} />}
+                {tab === 2 && <ExperienceForm resumeData={resumeData} onChange={handleLocalUpdate} onSave={handleUpdate} />}
+                {tab === 3 && <SkillsForm resumeData={resumeData} onChange={handleLocalUpdate} onSave={handleUpdate} />}
+                {tab === 4 && <ProjectsForm resumeData={resumeData} onChange={handleLocalUpdate} onSave={handleUpdate} />}
               </Box>
             </Card>
           </Box>
@@ -359,7 +383,7 @@ export default function ResumeEditor() {
                 }}
                 ref={previewRef}
               >
-                <ResumePreview resume={resume} />
+                <ResumePreview resume={resumeData} />
               </Box>
             </Card>
           </Box>

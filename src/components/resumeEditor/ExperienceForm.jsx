@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   TextField,
@@ -10,14 +10,10 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function ExperienceForm({ resume, onSave, onChange }) {
-  const [experiences, setExperiences] = useState([]);
+export default function ExperienceForm({ resumeData, onSave, onChange }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    setExperiences(resume.workExperience || []);
-  }, [resume]);
+  const experiences = resumeData?.workExperience || [];
 
   const addExperience = () => {
     const updated = [
@@ -30,7 +26,6 @@ export default function ExperienceForm({ resume, onSave, onChange }) {
         description: ""
       }
     ];
-    setExperiences(updated);
     if (typeof onChange === "function") onChange({ workExperience: updated });
     setError("");
     setSuccess(false);
@@ -39,7 +34,6 @@ export default function ExperienceForm({ resume, onSave, onChange }) {
   const updateExperience = (index, field, value) => {
     const updated = [...experiences];
     updated[index][field] = value;
-    setExperiences(updated);
     if (typeof onChange === "function") onChange({ workExperience: updated });
     setError("");
     setSuccess(false);
@@ -47,7 +41,6 @@ export default function ExperienceForm({ resume, onSave, onChange }) {
 
   const removeExperience = (index) => {
     const updated = experiences.filter((_, i) => i !== index);
-    setExperiences(updated);
     if (typeof onChange === "function") onChange({ workExperience: updated });
   };
 

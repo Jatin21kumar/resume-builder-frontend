@@ -130,7 +130,7 @@ export default function ResumePreview({ resume }) {
                 {edu.degree}
               </Typography>
               <Typography sx={{ color: "#3b82f6", fontWeight: 600 }}>
-                {edu.institution}
+                {edu.instituion || edu.institution}
               </Typography>
               <Typography variant="caption" sx={{ color: "#6b7280", fontWeight: 500 }}>
                 {edu.startDate} – {edu.endDate}

@@ -1,26 +1,19 @@
-import { useState, useEffect } from "react";
-import { Box, TextField, Button, Alert, Stack, Typography, Card } from "@mui/material";
+import { useState } from "react";
+import { Box, TextField, Button, Alert, Typography } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 
-export default function ProfileForm({ resume, onSave, onChange }) {
-  const [form, setForm] = useState({
-    fullName: "",
-    designation: "",
-    summary: ""
-  });
+export default function ProfileForm({ resumeData, onSave, onChange }) {
 
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // 🔑 Sync when resume changes
-  useEffect(() => {
-    setForm({
-      fullName: resume.profileInfo?.fullName || "",
-      designation: resume.profileInfo?.designation || "",
-      summary: resume.profileInfo?.summary || ""
-    });
-  }, [resume]);
+  const profileInfo = resumeData?.profileInfo || {};
+  const form = {
+    fullName: profileInfo.fullName || "",
+    designation: profileInfo.designation || "",
+    summary: profileInfo.summary || "",
+  };
 
   const validate = () => {
     const e = {};
@@ -36,7 +29,7 @@ export default function ProfileForm({ resume, onSave, onChange }) {
     try {
       await onSave({
         profileInfo: {
-          ...resume.profileInfo,
+          ...profileInfo,
           ...form
         }
       });
@@ -49,17 +42,12 @@ export default function ProfileForm({ resume, onSave, onChange }) {
   };
 
   const updateField = (field, value) => {
-    const nextForm = { ...form, [field]: value };
-    setForm(nextForm);
-
-    if (onChange) {
-      onChange({
-        profileInfo: {
-          ...resume.profileInfo,
-          ...nextForm,
-        },
-      });
-    }
+    onChange({
+      profileInfo: {
+        ...profileInfo,
+        [field]: value,
+      },
+    });
   };
 
   return (
