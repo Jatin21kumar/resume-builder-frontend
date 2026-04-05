@@ -9,6 +9,7 @@ import {
   Skeleton,
   Stack,
   Chip,
+  Alert,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -23,13 +24,19 @@ import AddIcon from "@mui/icons-material/Add";
 const ResumesList = forwardRef((props, ref) => {
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const navigate = useNavigate();
 
   const fetchResumes = async () => {
+    setLoading(true);
+    setError("");
     try {
       const data = await getUserResumes();
       setResumes(data || []);
+    } catch (err) {
+      setError(err.message || "Failed to load resumes");
+      setResumes([]);
     } finally {
       setLoading(false);
     }
@@ -103,6 +110,12 @@ const ResumesList = forwardRef((props, ref) => {
 
   return (
     <>
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
+
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" fontWeight={700} sx={{ mb: 3 }}>
           My Resumes
@@ -159,7 +172,7 @@ const ResumesList = forwardRef((props, ref) => {
                     <strong>Template:</strong> {resume.template || "Basic"}
                   </Typography>
                   <Typography variant="caption" sx={{ color: "#6b7280" }}>
-                    <strong>Updated:</strong> {new Date(resume.updatedAt).toLocaleDateString()}
+                    <strong>Updated:</strong> {resume.updatedAt ? new Date(resume.updatedAt).toLocaleDateString() : "Not available"}
                   </Typography>
                 </Stack>
               </CardContent>

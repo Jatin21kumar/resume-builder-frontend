@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ResumeEditor from "./pages/resume/ResumeEditor";
+import ResumeListPage from "./pages/resume/ResumeListPage";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/resume/list" element={<ResumeListPage />} />
             <Route path="/resume/:id/edit" element={<ResumeEditor />} />
           </Route>
         </Routes>

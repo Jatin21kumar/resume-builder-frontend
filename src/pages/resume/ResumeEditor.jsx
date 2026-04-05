@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import  api  from "../../api/axios";
 
 import {
@@ -8,6 +8,7 @@ import {
   Tab,
   CircularProgress,
   Typography,
+  Alert,
   TextField,
   Button,
   Select,
@@ -22,7 +23,7 @@ import {
   Container
 } from "@mui/material";
 
-import { getResumeById, updateResume } from "../../api/resumeApi";
+import { createDraftResume, getResumeById, updateResume } from "../../api/resumeApi";
 
 import ProfileForm from "../../components/resumeEditor/ProfileForm";
 import EducationForm from "../../components/resumeEditor/EducationForm";
@@ -40,9 +41,11 @@ import LockIcon from "@mui/icons-material/Lock";
 
 export default function ResumeEditor() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [resume, setResume] = useState(null);
   const [tab, setTab] = useState(0);
+  const [error, setError] = useState("");
 
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState("");
@@ -54,24 +57,55 @@ export default function ResumeEditor() {
   const [showUpgrade, setShowUpgrade] = useState(false);
 
   useEffect(() => {
-    getResumeById(id).then((data) => {
-      setResume(data);
-      setTitle(data.title || "");
-    });
-  }, [id]);
+    let isMounted = true;
+
+    const loadResume = async () => {
+      setError("");
+      try {
+        const data =
+          id === "new"
+            ? await createDraftResume()
+            : await getResumeById(id);
+
+        if (!isMounted) return;
+
+        setResume(data);
+        setTitle(data?.title || "");
+
+        if (id === "new" && data?.id) {
+          navigate(`/resume/${data.id}/edit`, { replace: true });
+        }
+      } catch (err) {
+        if (!isMounted) return;
+        setError(err.message || "Failed to load resume");
+      }
+    };
+
+    loadResume();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id, navigate]);
 
   const handleUpdate = async (partialUpdate) => {
     if (!resume) return;
 
     setSaving(true);
+    setError("");
 
-    const updated = await updateResume(id, {
-      ...resume,
-      ...partialUpdate,
-    });
+    try {
+      const updated = await updateResume(id, {
+        ...resume,
+        ...partialUpdate,
+      });
 
-    setResume(updated);
-    setSaving(false);
+      setResume(updated);
+    } catch (err) {
+      setError(err.message || "Failed to save resume changes");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDownload = async () => {
@@ -97,6 +131,7 @@ export default function ResumeEditor() {
       alert("Premium activated (mock)");
     } catch (err) {
       console.error("Mock payment failed", err);
+      setError("Payment request failed. Please try again.");
     }
   };
 
@@ -113,6 +148,12 @@ export default function ResumeEditor() {
       <Container maxWidth="100%" sx={{ py: 4 }}>
         {/* HEADER */}
         <Box sx={{ mb: 4 }}>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
             {editingTitle ? (
               <TextField
