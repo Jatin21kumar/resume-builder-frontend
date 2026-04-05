@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function ExperienceForm({ resume, onSave }) {
+export default function ExperienceForm({ resume, onSave, onChange }) {
   const [experiences, setExperiences] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -20,7 +20,7 @@ export default function ExperienceForm({ resume, onSave }) {
   }, [resume]);
 
   const addExperience = () => {
-    setExperiences([
+    const updated = [
       ...experiences,
       {
         company: "",
@@ -29,7 +29,9 @@ export default function ExperienceForm({ resume, onSave }) {
         endDate: "",
         description: ""
       }
-    ]);
+    ];
+    setExperiences(updated);
+    if (typeof onChange === "function") onChange({ workExperience: updated });
     setError("");
     setSuccess(false);
   };
@@ -38,12 +40,15 @@ export default function ExperienceForm({ resume, onSave }) {
     const updated = [...experiences];
     updated[index][field] = value;
     setExperiences(updated);
+    if (typeof onChange === "function") onChange({ workExperience: updated });
     setError("");
     setSuccess(false);
   };
 
   const removeExperience = (index) => {
-    setExperiences(experiences.filter((_, i) => i !== index));
+    const updated = experiences.filter((_, i) => i !== index);
+    setExperiences(updated);
+    if (typeof onChange === "function") onChange({ workExperience: updated });
   };
 
   const validate = () => {

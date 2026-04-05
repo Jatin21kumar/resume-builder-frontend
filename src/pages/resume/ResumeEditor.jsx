@@ -56,6 +56,17 @@ export default function ResumeEditor() {
   // premium popup
   const [showUpgrade, setShowUpgrade] = useState(false);
 
+  const handleLocalUpdate = (partialUpdate) => {
+    if (!partialUpdate) return;
+    setResume((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        ...partialUpdate,
+      };
+    });
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -301,11 +312,11 @@ export default function ResumeEditor() {
 
               {/* FORM CONTENT */}
               <Box sx={{ p: 4 }}>
-                {tab === 0 && <ProfileForm resume={resume} onSave={handleUpdate} />}
-                {tab === 1 && <EducationForm resume={resume} onSave={handleUpdate} />}
-                {tab === 2 && <ExperienceForm resume={resume} onSave={handleUpdate} />}
-                {tab === 3 && <SkillsForm resume={resume} onSave={handleUpdate} />}
-                {tab === 4 && <ProjectsForm resume={resume} onSave={handleUpdate} />}
+                {tab === 0 && <ProfileForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
+                {tab === 1 && <EducationForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
+                {tab === 2 && <ExperienceForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
+                {tab === 3 && <SkillsForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
+                {tab === 4 && <ProjectsForm resume={resume} onChange={handleLocalUpdate} onSave={handleUpdate} />}
               </Box>
             </Card>
           </Box>

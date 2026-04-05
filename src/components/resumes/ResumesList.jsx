@@ -20,6 +20,8 @@ import { getUserResumes } from "../../api/resumeApi";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const ResumesList = forwardRef((props, ref) => {
   const [resumes, setResumes] = useState([]);
@@ -33,7 +35,10 @@ const ResumesList = forwardRef((props, ref) => {
     setError("");
     try {
       const data = await getUserResumes();
-      setResumes(data || []);
+      setResumes(Array.isArray(data) ? data : []);
+      if (data && !Array.isArray(data)) {
+        setError("Unexpected response while loading resumes. Please refresh.");
+      }
     } catch (err) {
       setError(err.message || "Failed to load resumes");
       setResumes([]);
@@ -84,26 +89,50 @@ const ResumesList = forwardRef((props, ref) => {
           background: "linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%)"
         }}
       >
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
         <Typography variant="h5" fontWeight={700} sx={{ mb: 2 }}>
           No Resumes Yet
         </Typography>
         <Typography sx={{ color: "#a0aac0", mb: 4 }}>
           Create your first resume to get started. It only takes a few minutes!
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          size="large"
-          onClick={() => navigate("/resume/new/edit")}
-          sx={{
-            background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
-            "&:hover": {
-              background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
-            }
-          }}
-        >
-          Create Your First Resume
-        </Button>
+        <Box sx={{ display: "flex", gap: 1.5, justifyContent: "center", flexWrap: "wrap" }}>
+          <Button
+            variant="outlined"
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate("/dashboard")}
+          >
+            Back to Dashboard
+          </Button>
+
+          <Button
+            variant="outlined"
+            startIcon={<RefreshIcon />}
+            onClick={fetchResumes}
+          >
+            Retry
+          </Button>
+
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            size="large"
+            onClick={() => navigate("/resume/new/edit")}
+            sx={{
+              background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+              }
+            }}
+          >
+            Create Your First Resume
+          </Button>
+        </Box>
       </Card>
     );
   }

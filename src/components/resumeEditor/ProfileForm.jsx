@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, TextField, Button, Alert, Stack, Typography, Card } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 
-export default function ProfileForm({ resume, onSave }) {
+export default function ProfileForm({ resume, onSave, onChange }) {
   const [form, setForm] = useState({
     fullName: "",
     designation: "",
@@ -48,6 +48,20 @@ export default function ProfileForm({ resume, onSave }) {
     }
   };
 
+  const updateField = (field, value) => {
+    const nextForm = { ...form, [field]: value };
+    setForm(nextForm);
+
+    if (onChange) {
+      onChange({
+        profileInfo: {
+          ...resume.profileInfo,
+          ...nextForm,
+        },
+      });
+    }
+  };
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
       {success && (
@@ -65,7 +79,7 @@ export default function ProfileForm({ resume, onSave }) {
           value={form.fullName}
           error={!!errors.fullName}
           helperText={errors.fullName}
-          onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+          onChange={(e) => updateField("fullName", e.target.value)}
           required
           fullWidth
           placeholder="Enter your full name"
@@ -84,7 +98,7 @@ export default function ProfileForm({ resume, onSave }) {
         <TextField
           label="e.g., Software Engineer"
           value={form.designation}
-          onChange={(e) => setForm({ ...form, designation: e.target.value })}
+          onChange={(e) => updateField("designation", e.target.value)}
           fullWidth
           placeholder="Your job title or position"
           sx={{
@@ -104,7 +118,7 @@ export default function ProfileForm({ resume, onSave }) {
           value={form.summary}
           multiline
           minRows={5}
-          onChange={(e) => setForm({ ...form, summary: e.target.value })}
+          onChange={(e) => updateField("summary", e.target.value)}
           fullWidth
           placeholder="Write a compelling summary of your professional background, skills, and aspirations..."
           helperText={`${form.summary.length}/500 characters`}

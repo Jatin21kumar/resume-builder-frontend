@@ -1,27 +1,34 @@
 import { Box, TextField, Button, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function ProjectsForm({ resume, onSave }) {
+export default function ProjectsForm({ resume, onSave, onChange }) {
   const projects = resume.projects || [];
+
+  const emitUpdate = (updatedProjects) => {
+    if (typeof onChange === "function") {
+      onChange({ projects: updatedProjects });
+      return;
+    }
+
+    onSave({ projects: updatedProjects });
+  };
 
   const updateProject = (index, field, value) => {
     const updated = [...projects];
     updated[index][field] = value;
-    onSave({ projects: updated });
+    emitUpdate(updated);
   };
 
   const addProject = () => {
-    onSave({
-      projects: [
-        ...projects,
-        { title: "", company: "", description: "", link: "" }
-      ]
-    });
+    emitUpdate([
+      ...projects,
+      { title: "", company: "", description: "", link: "" }
+    ]);
   };
 
   const removeProject = (index) => {
     const updated = projects.filter((_, i) => i !== index);
-    onSave({ projects: updated });
+    emitUpdate(updated);
   };
 
   return (
@@ -78,6 +85,10 @@ export default function ProjectsForm({ resume, onSave }) {
 
       <Button variant="contained" onClick={addProject}>
         Add Project
+      </Button>
+
+      <Button variant="outlined" sx={{ ml: 2 }} onClick={() => onSave({ projects })}>
+        Save Projects
       </Button>
     </Box>
   );

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-export default function EducationForm({ resume, onSave }) {
+export default function EducationForm({ resume, onSave, onChange }) {
   const [educations, setEducations] = useState([]);
   const [errors, setErrors] = useState("");
   const [success, setSuccess] = useState(false);
@@ -20,7 +20,7 @@ export default function EducationForm({ resume, onSave }) {
   }, [resume]);
 
   const addEducation = () => {
-    setEducations([
+    const updated = [
       ...educations,
       {
         degree: "",
@@ -28,19 +28,25 @@ export default function EducationForm({ resume, onSave }) {
         startDate: "",
         endDate: ""
       }
-    ]);
+    ];
+
+    setEducations(updated);
+    if (typeof onChange === "function") onChange({ educations: updated });
   };
 
   const updateEducation = (index, field, value) => {
     const updated = [...educations];
     updated[index][field] = value;
     setEducations(updated);
+    if (typeof onChange === "function") onChange({ educations: updated });
     setErrors("");
     setSuccess(false);
   };
 
   const removeEducation = (index) => {
-    setEducations(educations.filter((_, i) => i !== index));
+    const updated = educations.filter((_, i) => i !== index);
+    setEducations(updated);
+    if (typeof onChange === "function") onChange({ educations: updated });
   };
 
   const validate = () => {
